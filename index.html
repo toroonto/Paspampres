@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PASPAMPRES (TimmyFess's)</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f6f9;
+            line-height: 1.6;
+            color: #333;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            position: relative;
+            height: 400px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        header .content {
+            position: relative;
+            z-index: 10;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .background-controls {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255,255,255,0.2);
+            padding: 10px;
+            border-radius: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+        .background-controls button {
+            background-color: rgba(255,255,255,0.3);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .background-controls button:hover {
+            background-color: rgba(255,255,255,0.5);
+        }
+        .member-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+        }
+        .member-card {
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .member-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+        .member-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+        }
+        .member-info {
+            padding: 15px;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 600px;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        .modal-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        @media (max-width: 1024px) {
+            .member-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+        @media (max-width: 768px) {
+            .member-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            header {
+                height: 300px;
+            }
+        }
+        @media (max-width: 480px) {
+            .member-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            header {
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header id="mainHeader">
+        <div class="header-overlay"></div>
+        <div class="content">
+            <h1>PASPAMPRES</h1>
+            <p>Ikan cupang mati satu, yaudah mati aja orang gak lagi ngepantun awokaowaokwoak</p>
+        </div>
+        <div class="background-controls">
+            <button onclick="changeBackground('prev')">Sebelumnya</button>
+            <button onclick="changeBackground('next')">Selanjutnya</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="member-grid" id="memberGrid">
+            <!-- Member cards will be dynamically added by JavaScript -->
+        </div>
+    </div>
+
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <h2 id="modalName"></h2>
+            <p id="modalRole"></p>
+            <p id="modalDetail"></p>
+        </div>
+    </div>
+
+    <script>
+        const backgroundImages = [
+            "1.jpeg",
+            "2.jpeg?color=blue",
+            "3.jpeg?color=purple",
+            "4.jpeg?color=green",
+        ];
+
+        let currentBackgroundIndex = 0;
+
+        function changeBackground(direction) {
+            if (direction === 'next') {
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
+            } else {
+                currentBackgroundIndex = (currentBackgroundIndex - 1 + backgroundImages.length) % backgroundImages.length;
+            }
+            
+            const header = document.getElementById('mainHeader');
+            header.style.backgroundImage = `url('${backgroundImages[currentBackgroundIndex]}')`;
+        }
+
+        // Initialize first background
+        document.getElementById('mainHeader').style.backgroundImage = `url('${backgroundImages[currentBackgroundIndex]}')`;
+
+        const members = [
+            {
+                name: "Leviathan",
+                role: "As Oppa",
+                description: "Makasih kak udah selalu ngejokes atau ngirim template anak rp digrup",
+                image: "Leviathan.jpeg"
+            },
+            {
+                name: "Madrid",
+                role: "As Bitzer",
+                description: "Makasih bang udah selalu perhatian sama sekitar + ngebimbing gua",
+                image: "Madrid.jpeg"
+            },
+            {
+                name: "Arash",
+                role: "As Ramblers",
+                description: "Makasih udah update ikan cupang di grup terus",
+                image: "Arash.jpeg"
+            },
+            {
+                name: "Edzhar",
+                role: "As Osbourne",
+                description: "Makasih bang udah ada di Timmy dari jaman jebot",
+                image: "Edzhar.jpeg"
+            },
+            {
+                name: "Michie",
+                role: "As Mittens",
+                description: "Makasih kak udah selalu welcome di grup",
+                image: "Michie.jpg"
+            },
+            {
+                name: "Aram",
+                role: "As Ruffy",
+                description: "Makasih udah mau jadi orang gamon kayak gua",
+                image: "Aram.jpeg"
+            },
+            {
+                name: "Kanalom",
+                role: "As Stripey",
+                description: "Makasih kak udah ngirim PS kalo on",
+                image: "Kanalom.jpeg"
+            },
+            {
+                name: "Aimee",
+                role: "As Otus",
+                description: "Makasih udah ngakak terus pas gua ngejokes",
+                image: "Aimee.jpg"
+            },
+            {
+                name: "Jeje",
+                role: "As Pidsley",
+                description: "Makasih udah mau mau aja gua kibulin (ampun)",
+                image: "Jeje.jpeg"
+            },
+            {
+                name: "Segio",
+                role: "As Trumper",
+                description: "Makasih udah ganteng, hot, idaman wanita",
+                image: "Segio.jpeg"
+            }
+        ];
+
+        function renderMembers() {
+            const memberGrid = document.getElementById('memberGrid');
+            members.forEach((member, index) => {
+                const memberCard = document.createElement('div');
+                memberCard.classList.add('member-card');
+                memberCard.innerHTML = `
+                    <img src="${member.image}" alt="${member.name}">
+                    <div class="member-info">
+                        <h3>${member.name}</h3>
+                        <p>${member.role}</p>
+                    </div>
+                `;
+                memberCard.addEventListener('click', () => openModal(member));
+                memberGrid.appendChild(memberCard);
+            });
+        }
+
+        function openModal(member) {
+            const modal = document.getElementById('memberModal');
+            const modalName = document.getElementById('modalName');
+            const modalRole = document.getElementById('modalRole');
+            const modalDetail = document.getElementById('modalDetail');
+
+            modalName.textContent = member.name;
+            modalRole.textContent = member.role;
+            modalDetail.textContent = member.description;
+            modal.style.display = 'flex';
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('memberModal');
+            modal.style.display = 'none';
+        }
+
+        // Render members when page loads
+        document.addEventListener('DOMContentLoaded', renderMembers);
+    </script>
+</body>
+</html>
