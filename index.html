@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PASPAMPRES (TimmyFess's)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-primary: #1c1e21;
+            --text-secondary: #65676b;
+            --accent-color: #007bff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--primary-bg);
+            line-height: 1.6;
+            color: var(--text-primary);
+        }
+
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        /* --- Header --- */
+        header {
+            position: relative;
+            height: 450px;
+            background-size: cover;
+            background-position: center;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: background-image 1s ease-in-out;
+        }
+
+        .header-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 70%, rgba(0,0,0,0.1) 100%);
+        }
+
+        header .content {
+            position: relative;
+            z-index: 10;
+            padding: 0 15px; /* Menambahkan padding agar teks tidak menempel di tepi layar kecil */
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+        }
+        
+        header h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+        }
+
+        /* --- Background Controls --- */
+        .background-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 10px;
+            border-radius: 50px;
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .background-controls button {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            transition: background-color 0.3s ease;
+        }
+
+        .background-controls button:hover {
+            background-color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* --- Search Bar --- */
+        .search-container {
+            margin-bottom: 30px;
+            position: relative;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px 12px 45px;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: box-shadow 0.3s;
+        }
+
+        #searchInput:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            border-color: var(--accent-color);
+        }
+        
+        .search-container .fa-search {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-secondary);
+        }
+
+        /* --- Member Grid --- */
+        .member-grid {
+            display: grid;
+            /* Menggunakan minmax untuk membuat kolom responsif secara otomatis */
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 25px;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .member-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow-color);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+            opacity: 0;
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        .member-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+
+        .member-card img {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+        }
+
+        .member-info {
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .member-info h3 {
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+        
+        .member-info p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        /* --- Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.6);
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            padding: 15px; /* Menambahkan padding agar modal tidak menempel di tepi */
+        }
+        
+        .modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 35px;
+            max-width: 500px;
+            width: 100%; /* Dibuat 100% agar sesuai dengan padding parent */
+            text-align: center;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transform: scale(0.9);
+            transition: transform 0.4s ease;
+        }
+        
+        .modal.active .modal-content {
+             transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #f1f1f1;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            transition: background-color 0.3s, color 0.3s;
+        }
+        
+        .modal-close:hover {
+            background-color: #e4e6eb;
+            color: var(--text-primary);
+        }
+        
+        #modalName {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        #modalRole {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        
+        #modalDetail {
+            font-size: 1rem;
+            color: var(--text-secondary);
+        }
+        
+        /* --- Footer --- */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            color: var(--text-secondary);
+            border-top: 1px solid #ddd;
+        }
+
+        /* ------------------------------------------- */
+        /* --- ATURAN RESPONSIVE UNTUK MOBILE (HP) --- */
+        /* ------------------------------------------- */
+
+        /* Untuk Tablet (lebar layar di bawah 768px) */
+        @media (max-width: 768px) {
+            header { 
+                height: 400px; 
+            }
+            header h1 { 
+                font-size: 2.8rem; 
+            }
+            .member-grid {
+                gap: 20px; /* Mengurangi jarak antar kartu */
+            }
+        }
+
+        /* Untuk Mobile (lebar layar di bawah 480px) */
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 15px; /* Mengurangi padding kiri-kanan */
+            }
+            header {
+                height: 300px;
+            }
+            header h1 {
+                font-size: 2.1rem; /* Mengecilkan font judul */
+            }
+            header .content p {
+                font-size: 0.9rem; /* Mengecilkan font subjudul */
+            }
+            .background-controls button {
+                padding: 6px 14px; /* Mengecilkan tombol */
+                font-size: 0.8rem;
+            }
+            .search-container {
+                margin-bottom: 25px;
+            }
+            .member-grid {
+                /* Menggunakan minmax(140px, 1fr) agar bisa memuat 2 kolom di layar mobile */
+                grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+                gap: 15px; /* Jarak antar kartu lebih kecil */
+            }
+            .member-card img {
+                height: 200px; /* Mengurangi tinggi gambar agar proporsional */
+            }
+            .modal-content {
+                padding: 25px; /* Mengurangi padding di dalam modal */
+            }
+            #modalName {
+                font-size: 1.5rem; /* Mengecilkan font nama di modal */
+            }
+            #modalRole {
+                font-size: 1rem; /* Mengecilkan font peran di modal */
+            }
+            #modalDetail {
+                font-size: 0.9rem; /* Mengecilkan font deskripsi di modal */
+            }
+            footer {
+                margin-top: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header id="mainHeader">
+        <div class="header-overlay"></div>
+        <div class="content">
+            <h1>PASPAMPRES</h1>
+            <p>Isinya cuman peroasting handal :V (dibuat dari sudut pandang Trumper)</p>
+        </div>
+        <div class="background-controls">
+            <button onclick="changeBackground('prev')">Previous</button>
+            <button onclick="changeBackground('next')">Next</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="searchInput" placeholder="Cari nama peroasting handal kalian...">
+        </div>
+        
+        <div class="member-grid" id="memberGrid">
+            </div>
+    </div>
+
+    <div id="memberModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeModal()">
+                <i class="fas fa-times"></i>
+            </button>
+            <h2 id="modalName"></h2>
+            <p id="modalRole"></p>
+            <p id="modalDetail"></p>
+        </div>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 TimmyFess's PASPAMPRES. Dibuat dengan kasih sayang gw terhadap kalian smua, ily guys.</p>
+    </footer>
+
+    <script>
+        const backgroundImages = [
+            "1.jpeg", "2.jpeg?color=blue", "3.jpeg?color=purple", "4.jpeg?color=green",
+        ];
+
+        const members = [
+            { name: "Leviathan", role: "As Oppa", description: "Makasih kak udah selalu ngejokes atau ngirim template anak rp digrup", image: "Leviathan.jpeg" },
+            { name: "Madrid", role: "As Bitzer", description: "Makasih bang udah selalu perhatian sama sekitar + ngebimbing gua", image: "Madrid.jpeg" },
+            { name: "Arash", role: "As Ramblers", description: "Makasih udah update ikan cupang di grup terus", image: "Arash.jpeg" },
+            { name: "Edzhar", role: "As Osbourne", description: "Makasih bang udah ada di Timmy dari jaman jebot", image: "Edzhar.jpeg" },
+            { name: "Michie", role: "As Mittens", description: "Makasih kak udah selalu welcome di grup", image: "Michie.jpg" },
+            { name: "Aram", role: "As Ruffy", description: "Makasih udah mau jadi orang gamon kayak gua", image: "Aram.jpeg" },
+            { name: "Kanalom", role: "As Stripey", description: "Makasih kak udah ngirim PS kalo on", image: "Kanalom.jpeg" },
+            { name: "Aimee", role: "As Otus", description: "Makasih udah ngakak terus pas gua ngejokes", image: "Aimee.jpg" },
+            { name: "Jeje", role: "As Pidsley", description: "Makasih udah mau mau aja gua kibulin (ampun)", image: "Jeje.jpeg" },
+            { name: "Segio", role: "As Trumper", description: "Makasih udah ganteng, hot, idaman wanita", image: "Segio.jpg" },
+            { name: "Sereia", role: "As Shirley", description: "Makasih udah jadi pembaik dan suka menolong", image: "jo soomin.jpg" },
+            { name: "Dave", role: "As Finlay", description: "Makasih udah bikin board fake chat", image: "Dave.jpg" },
+            { name: "Chizumi", role: "As Yabba", description: "Makasih udah ketawa mulu pas gw ngejokes cringe", image: "Chizumi.jpg" },
+            { name: "Gendis", role: "As Harriet", description: "Makasih udah jadi penggendong handal paspampres", image: "Ndis.jpg" }
+        ];
+
+        let currentBackgroundIndex = 0;
+        let backgroundInterval;
+
+        const header = document.getElementById('mainHeader');
+        const memberGrid = document.getElementById('memberGrid');
+        const searchInput = document.getElementById('searchInput');
+
+        // --- Background Slider ---
+        function setBackground() {
+            header.style.backgroundImage = `url('${backgroundImages[currentBackgroundIndex]}')`;
+        }
+
+        function changeBackground(direction) {
+            if (direction === 'next') {
+                currentBackgroundIndex = (currentBackgroundIndex + 1) % backgroundImages.length;
+            } else {
+                currentBackgroundIndex = (currentBackgroundIndex - 1 + backgroundImages.length) % backgroundImages.length;
+            }
+            setBackground();
+            resetBackgroundInterval();
+        }
+        
+        function startBackgroundInterval() {
+            backgroundInterval = setInterval(() => changeBackground('next'), 5000); // Ganti gambar setiap 5 detik
+        }
+        
+        function resetBackgroundInterval() {
+            clearInterval(backgroundInterval);
+            startBackgroundInterval();
+        }
+
+        // --- Member Rendering ---
+        function renderMembers(filteredMembers = members) {
+            memberGrid.innerHTML = ''; // Kosongkan grid sebelum render ulang
+            filteredMembers.forEach((member, index) => {
+                const memberCard = document.createElement('div');
+                memberCard.classList.add('member-card');
+                
+                // Staggered animation delay
+                memberCard.style.animationDelay = `${index * 0.05}s`;
+                
+                memberCard.innerHTML = `
+                    <img src="${member.image}" alt="${member.name}" loading="lazy">
+                    <div class="member-info">
+                        <h3>${member.name}</h3>
+                        <p>${member.role}</p>
+                    </div>
+                `;
+                memberCard.addEventListener('click', () => openModal(member));
+                memberGrid.appendChild(memberCard);
+            });
+        }
+
+        // --- Search Functionality ---
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const filtered = members.filter(member => 
+                member.name.toLowerCase().includes(searchTerm)
+            );
+            renderMembers(filtered);
+        });
+
+        // --- Modal ---
+        const modal = document.getElementById('memberModal');
+        function openModal(member) {
+            document.getElementById('modalName').textContent = member.name;
+            document.getElementById('modalRole').textContent = member.role;
+            document.getElementById('modalDetail').textContent = member.description;
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+        }
+        
+        // Close modal if clicked outside of the content
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                closeModal();
+            }
+        });
+
+        // --- Initial Load ---
+        document.addEventListener('DOMContentLoaded', () => {
+            setBackground();
+            startBackgroundInterval();
+            renderMembers();
+        });
+    </script>
+</body>
+</html>
